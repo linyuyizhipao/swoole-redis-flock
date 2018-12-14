@@ -25,5 +25,4 @@ class Info extends Base
         $this->success($result);
     }
 
-
 }

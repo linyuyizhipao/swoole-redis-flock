@@ -56,6 +56,7 @@ class Index extends Base
         $uid = $postParam['uid'];
         $fd = $postParam['fd'];
         $accountObj = AccountService::getInstance();
+        $mysqlStran =  $accountObj->getDb()->startTransaction();
         //将用户上线的信息存入mysql
         $mysqlActiveStatus = $accountObj->userActiveMysql($uid,$fd);
         if($mysqlActiveStatus === false)
@@ -63,9 +64,11 @@ class Index extends Base
 
         //同步redis
         $redisStatus = $accountObj->userActiveRedis($uid,['fd',$fd]);
-        if($redisStatus)
+        if($redisStatus){
+            $mysqlStran->rollback();
             throw new GeneralException('redis同步失败');
-
+        }
+        $mysqlStran->commit();
         $this->success(true,'上报成功');
     }
 }

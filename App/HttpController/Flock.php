@@ -17,11 +17,12 @@ class Flock extends Base
         $param = FlockRequest::getInstance()->create($this->request()->getRequestParam());
         $uids = $param['uids'];
         $result = [];
+
         $flockObj = FlockService::getInstance();
+        $mysqlStran = $flockObj->getDb()->startTransaction();
         $getFlockId = $flockObj->createId();
 
         $res = $flockObj->createFlockMysql($getFlockId,$uids);
-
         if(empty($res)){
             throw new GeneralException('创建群失败');
         }
@@ -29,9 +30,10 @@ class Flock extends Base
         $redisStatus = $flockObj->createFlockRedis($getFlockId,$uids);
 
         if(empty($redisStatus)){
+            $mysqlStran->rollback();
             throw new GeneralException('创建失败');
         }
-
+        $mysqlStran->commit();
         $this->success($result);
     }
 
@@ -44,15 +46,19 @@ class Flock extends Base
         $msg = $param['msg'];
 
         $flockObj = FlockService::getInstance();
+        $mysqlStran = $flockObj->getDb()->startTransaction();
         //mysql存根
         $mysqlStatus = $flockObj->mysqlReserveMsg($uid,$flockId,$msg);
-        if(empty($mysqlStatus))
+        if(empty($mysqlStatus)){
+            $mysqlStran->rollback();
             throw new GeneralException('发送失败');
+        }
         //redis推送
-        $redisStatus = $flockObj->redisPublish();
+        $redisStatus = $flockObj->redisPublish($uid,$flockId,$msg);
         if(empty($redisStatus))
             throw new GeneralException('失败');
 
+        $mysqlStran->commit();//当前认为redis必须成功才算发消息成功
         $this->success(true,'发送成功');
     }
 }

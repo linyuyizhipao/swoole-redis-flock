@@ -1,15 +1,11 @@
 <?php
 namespace App\HttpController;
 
-
-use App\Exception\AuthException;
-use App\Model\User\UserModel;
-use App\Service\FlockService;
 use EasySwoole\Http\AbstractInterface\Controller;
 use EasySwoole\Spl\SplString;
 use EasySwoole\Curl\Request;
 
-class Index extends Controller
+class Test extends Controller
 {
 
     function index()
