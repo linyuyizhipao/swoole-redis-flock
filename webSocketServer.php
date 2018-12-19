@@ -91,6 +91,7 @@ $server = new swoole_websocket_server(Config::get('WEB_SOCKET_ALLOW_IP'), Config
 $server->on('open', function (swoole_websocket_server $server, $request){
     //建立连接客户端初始化
     $channelStatusNum = $server->atomic->get();
+    //只有第一个客户端连接的时候会进入if，启动redis的订阅，共享内存方式控制此单例
     if($channelStatusNum == CHANNEL_STATUS_VAL){
         $server->atomic->add();
         $channel = Config::get('REDIS_CHANNEL'); //订阅redis的频道名称

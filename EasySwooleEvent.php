@@ -36,8 +36,7 @@ class EasySwooleEvent implements Event
 
     public static function mainServerCreate(EventRegister $register)
     {
-        // TODO: Implement mainServerCreate() method.
-        ServerManager::getInstance()->getSwooleServer()->addProcess((new FlockChat('flock98'))->getProcess());
+
     }
 
     public static function onRequest(Request $request, Response $response): bool

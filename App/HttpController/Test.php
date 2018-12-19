@@ -1,6 +1,7 @@
 <?php
 namespace App\HttpController;
 
+use EasySwoole\EasySwoole\Swoole\Task\TaskManager;
 use EasySwoole\Http\AbstractInterface\Controller;
 use EasySwoole\Spl\SplString;
 use EasySwoole\Curl\Request;
@@ -10,8 +11,8 @@ class Test extends Controller
 
     function index()
     {
-//        FlockService::getInstance()->createFlock([1,2,3,4,5,6,7]);
-      //  FlockService::getInstance()->sendMeg('1','111','hello99!');
+        $result = TaskManager::async(\App\Task\DisposeCorpusFile::class);
+
 
 
 
