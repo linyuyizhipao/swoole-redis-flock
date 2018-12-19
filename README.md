@@ -26,4 +26,4 @@ php easyswoole start  cli 直接启动服务器
 
 /App/Task/DisposeCorpusFile.php  结合redis特性写了个异步io计算文件稿件句子重复率的算法解决方案的demo
 
-
+/webSocketServer.php    redis订阅频道实现websocker实时低耦合通讯
